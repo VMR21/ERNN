@@ -302,28 +302,62 @@
         <div data-v-1d580398="" class="row text" style="margin-top: 50px;">
             <span data-v-1d580398="" class="title">Our Socials!</span>
         </div>
-        <div class="social-media-cards">
-            <a href="https://kick.com/erntmz" target="_blank" class="card kick">
-                <img src="/assets/kick.png" alt="Kick Logo" class="icon kick-icon" />
-                <span>@ErnTmz</span>
-            </a>
-            <a href="https://tiktok.com/@arentopg" target="_blank" class="card tiktok">
-                <img src="/assets/tiktok.png" alt="TikTok Logo" class="icon" />
-                <span>@arentopg</span>
-            </a>
-            <a href="https://instagram.com/ern.did" target="_blank" class="card instagram">
-                <img src="/assets/instagram.png" alt="Instagram Logo" class="icon" />
-                <span>@ern.did</span>
-            </a>
-            <a href="https://youtube.com/ern_did" target="_blank" class="card youtube">
-                <img src="/assets/youtube.png" alt="YouTube Logo" class="icon" />
-                <span>@ern_did</span>
-            </a>
-            <a href="https://discord.gg/erndid" target="_blank" class="card discord">
-                <img src="/assets/discord.png" alt="Discord Logo" class="icon" />
-                <span>@erndid</span>
-            </a>
-        </div>
+<style>
+  .social-media-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 30px;
+  }
+
+  .social-media-cards .card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: white;
+    font-weight: 500;
+    transition: transform 0.2s;
+  }
+
+  .social-media-cards .card:hover {
+    transform: translateY(-3px);
+  }
+
+  .social-media-cards .icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+  }
+</style>
+
+<div class="social-media-cards">
+    <a href="https://kick.com/erntmz" target="_blank" class="card kick">
+        <img src="/assets/kick.png" alt="Kick Logo" class="icon" />
+        <span>@ErnTmz</span>
+    </a>
+    <a href="https://tiktok.com/@arentopg" target="_blank" class="card tiktok">
+        <img src="/assets/tiktok.png" alt="TikTok Logo" class="icon" />
+        <span>@arentopg</span>
+    </a>
+    <a href="https://instagram.com/ern.did" target="_blank" class="card instagram">
+        <img src="/assets/instagram.png" alt="Instagram Logo" class="icon" />
+        <span>@ern.did</span>
+    </a>
+    <a href="https://youtube.com/ern_did" target="_blank" class="card youtube">
+        <img src="/assets/youtube.png" alt="YouTube Logo" class="icon" />
+        <span>@ern_did</span>
+    </a>
+    <a href="https://discord.gg/erndid" target="_blank" class="card discord">
+        <img src="/assets/discord.png" alt="Discord Logo" class="icon" />
+        <span>@erndid</span>
+    </a>
+</div>
+
 
 
     <!-- <div data-v-1d580398="" class="row text" style="margin-top: 50px;">
