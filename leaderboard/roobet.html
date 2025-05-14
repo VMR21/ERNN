@@ -317,7 +317,7 @@
 <div class="css-esk2ah">
   <div class="css-2w2ovy">
     <!-- Top 3 Player Cards -->
-    <div class="css-gqrafh" id="top3-cards">
+    <div class="css-gqrafh" id="top3-cards" style="position: relative; height: 180px;">
       <!-- Top 3 inserted via JS -->
     </div>
 
@@ -491,9 +491,22 @@ async function loadLeaderboard() {
       const card = document.createElement('div');
       card.className = 'css-jehefp';
       card.style.boxShadow = top3Glows[index];
-      card.style.position = 'relative';
-      if (index === 1) card.style.transform = 'translateY(25px)';
-      if (index === 2) card.style.transform = 'translateY(25px)';
+      card.style.position = 'absolute';
+
+      if (index === 0) {
+        card.style.left = '50%';
+        card.style.transform = 'translateX(-50%)';
+        card.style.zIndex = '3';
+      } else if (index === 1) {
+        card.style.left = '25%';
+        card.style.transform = 'translate(-50%, 40px)';
+        card.style.zIndex = '2';
+      } else if (index === 2) {
+        card.style.left = '75%';
+        card.style.transform = 'translate(-50%, 40px)';
+        card.style.zIndex = '1';
+      }
+
       card.innerHTML = `
         <img src="${roobetLogo}" width="96" height="96" style="border-radius: 12px;">
         <div class="css-hca0vm"><span class="css-15a1lq3" style="font-weight:bold;">${username}</span></div>
@@ -502,7 +515,8 @@ async function loadLeaderboard() {
         </div>
         <span class="css-v4675v"><div class="css-1y0ox2o"><span class="css-114dvlx glow">${reward}</span></div></span>`;
       top3Container.appendChild(card);
-    } else {
+    }
+    else {
       const row = document.createElement('div');
       row.className = 'row list row-cols-5';
       row.setAttribute('data-v-1d580398', '');
