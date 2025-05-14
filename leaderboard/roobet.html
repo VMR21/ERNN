@@ -498,10 +498,13 @@ async function loadLeaderboard() {
       card.className = 'css-jehefp';
       card.style.boxShadow = top3Glows[index];
       card.style.position = 'relative';
-      if (index === 1) card.style.transform = 'translateY(25px) scale(1.2)';
+      if (index === 1) {
+          card.style.transformOrigin = 'center center';
+          card.style.transform = 'translateY(25px) scale(1.2)';
+      }
       if (index === 2) card.style.transform = 'translateY(25px)';
       card.innerHTML = `
-        <img src="${roobetLogo}" width="96" height="96" style="border-radius: 12px;">
+        <img src="${roobetLogo}" style="width: 96px; height: auto; border-radius: 12px;">
         <div class="css-hca0vm"><span class="css-15a1lq3" style="font-weight:bold;">${username}</span></div>
         <div class="css-7ahevu ejrykqo0"><span class="css-1vqddgv">Wagered: </span>
           <span class="css-18icuxn"><div class="css-1y0ox2o"><span class="css-114dvlx">${wagered}</span></div></span>
