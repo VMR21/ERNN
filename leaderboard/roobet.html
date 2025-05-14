@@ -303,8 +303,8 @@
 <div class="css-esk2ah">
   <div class="css-2w2ovy">
     <!-- Top 3 Player Cards -->
-    <div class="css-gqrafh">
-      <!-- Cards will be inserted here by JS -->
+    <div class="css-gqrafh" id="top3-cards">
+      <!-- Top 3 inserted via JS -->
     </div>
 
     <!-- Countdown Timer -->
@@ -324,8 +324,10 @@
     <div class="col-3"> Wagered </div>
   </div>
 
-  <!-- Player Rows will be inserted here via JS -->
+  <!-- Player Rows (4-10) -->
+  <div id="leaderboard-rows"></div>
 </div>
+
 
 
     <div data-v-5867ad71="" class="row inner-footer">
@@ -444,57 +446,73 @@
 <script src="/js/particles.js"></script>
 <script src="/js/toast.js"></script>
 <script>
-  const API_URL = 'https://azisailbdata-q469.onrender.com/leaderboard/top14'; // ⬅️ Replace with your actual API
-  const rewardList = [1000, 750, 500, 250, 200, 150, 100, 75, 50, 25];
-  const ROOBET_LOGO = "/assets/roobet.png";
+const API_URL = 'https://azisailbdata-q469.onrender.com/leaderboard/top14'; // 🔁 Replace with your API
+const rewards = [1000, 750, 500, 250, 200, 150, 100, 75, 50, 25]; // for top 10
+const roobetLogo = '/assets/roobetlogo.png';
+const endDate = new Date("2025-05-31T23:59:59Z"); // 🕛 End date of event
 
-  async function loadLeaderboard() {
-    try {
-      const res = await fetch(API_URL);
-      const players = await res.json();
-
-      const topContainer = document.querySelector('.css-gqrafh');
-      topContainer.innerHTML = '';
-
-      players.slice(0, 3).forEach((player, index) => {
-        const reward = rewardList[index] || 0;
-        const card = document.createElement('div');
-        card.className = 'css-jehefp';
-        card.innerHTML = `
-          <img src="${ROOBET_LOGO}" width="96" height="96" class="css-1wgwpc8" />
-          <div class="css-hca0vm"><span class="css-15a1lq3">${player.username}</span></div>
-          <div class="css-7ahevu ejrykqo0">
-              <span class="css-1vqddgv">Wagered: </span>
-              <span class="css-18icuxn"><div class="css-1y0ox2o"><span class="css-114dvlx">$ ${player.wagered.toLocaleString()}</span></div></span>
-          </div>
-          <span class="css-v4675v"><div class="css-1y0ox2o"><span class="css-114dvlx glow">$ ${reward}</span></div></span>
-        `;
-        topContainer.appendChild(card);
-      });
-
-      const insertPoint = document.querySelector('.row.list.details');
-      document.querySelectorAll('.row.list.row-cols-5').forEach(row => row.remove());
-
-      players.forEach((player, index) => {
-        const reward = rewardList[index] || 0;
-        const row = document.createElement('div');
-        row.className = 'row list row-cols-5';
-        row.innerHTML = `
-          <div class="hide-mobile col-2"><b>#</b>${index + 1}</div>
-          <div class="col-5">
-            <img src="${ROOBET_LOGO}" style="width: 28px; height: 28px; margin-right: 6px;" />
-            <span>${player.username}</span>
-          </div>
-          <div class="col-2"><div class="price-wrapper glow">$ ${reward}</div></div>
-          <div class="col-3"><div class="price-wrapper" style="color: #FFF">$ ${player.wagered.toLocaleString()}</div></div>
-        `;
-        insertPoint.insertAdjacentElement('afterend', row);
-      });
-
-    } catch (error) {
-      console.error("Leaderboard load error:", error);
-    }
+function updateCountdown() {
+  const now = new Date();
+  const diff = endDate - now;
+  if (diff < 0) {
+    document.getElementById('countdown').textContent = "ENDED";
+    return;
   }
 
-  window.addEventListener('DOMContentLoaded', loadLeaderboard);
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hrs = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const mins = Math.floor((diff / (1000 * 60)) % 60);
+  const secs = Math.floor((diff / 1000) % 60);
+
+  document.getElementById('countdown').textContent =
+    `${days} Days ${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+}
+setInterval(updateCountdown, 1000);
+updateCountdown();
+
+async function loadLeaderboard() {
+  const res = await fetch(API_URL);
+  const data = await res.json();
+
+  const top3 = document.getElementById('top3-cards');
+  const rows = document.getElementById('leaderboard-rows');
+
+  data.forEach((entry, i) => {
+    const reward = rewards[i] ? `$ ${rewards[i]}` : '$ 0';
+    const wagered = `$ ${Number(entry.wagered).toLocaleString()}`;
+    const username = entry.username;
+
+    if (i < 3) {
+      const div = document.createElement('div');
+      div.className = 'css-jehefp';
+      div.innerHTML = `
+        <img src="${roobetLogo}" width="96" height="96" style="border-radius: 12px;">
+        <div class="css-hca0vm"><span class="css-15a1lq3">${username}</span></div>
+        <div class="css-7ahevu ejrykqo0"><span class="css-1vqddgv">Wagered: </span>
+          <span class="css-18icuxn"><div class="css-1y0ox2o"><span class="css-114dvlx">${wagered}</span></div></span>
+        </div>
+        <span class="css-v4675v"><div class="css-1y0ox2o"><span class="css-114dvlx glow">${reward}</span></div></span>`;
+      top3.appendChild(div);
+    } else {
+      const row = document.createElement('div');
+      row.className = 'row list row-cols-5';
+      row.innerHTML = `
+        <div class="hide-mobile col-2"><b>#</b>${i + 1}</div>
+        <div class="col-5">
+          <img src="${roobetLogo}" width="20" style="vertical-align: middle; margin-right: 6px;">
+          <span>${username}</span>
+        </div>
+        <div class="col-2">
+          <div class="price-wrapper glow">${reward}</div>
+        </div>
+        <div class="col-3">
+          <div class="price-wrapper" style="color: #FFF">${wagered}</div>
+        </div>`;
+      rows.appendChild(row);
+    }
+  });
+}
+
+loadLeaderboard();
 </script>
+
