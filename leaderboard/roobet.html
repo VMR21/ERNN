@@ -494,10 +494,32 @@ async function loadLeaderboard() {
       card.style.position = 'absolute';
 
       if (index === 0) {
+        // Centered Gold Card
         card.style.left = '50%';
-        card.style.transform = 'translateX(-50%)';
+        card.style.transform = 'translate(-50%, 0)';
         card.style.zIndex = '3';
       } else if (index === 1) {
+        // Left Lower Silver Card
+        card.style.left = '30%';
+        card.style.transform = 'translate(-50%, 40px)';
+        card.style.zIndex = '2';
+      } else if (index === 2) {
+        // Right Lower Bronze Card
+        card.style.left = '70%';
+        card.style.transform = 'translate(-50%, 40px)';
+        card.style.zIndex = '2';
+      }
+
+      card.innerHTML = `
+        <img src="${roobetLogo}" width="96" height="96" style="border-radius: 12px;">
+        <div class="css-hca0vm"><span class="css-15a1lq3" style="font-weight:bold;">${username}</span></div>
+        <div class="css-7ahevu ejrykqo0"><span class="css-1vqddgv">Wagered: </span>
+          <span class="css-18icuxn"><div class="css-1y0ox2o"><span class="css-114dvlx">${wagered}</span></div></span>
+        </div>
+        <span class="css-v4675v"><div class="css-1y0ox2o"><span class="css-114dvlx glow">${reward}</span></div></span>`;
+      top3Container.appendChild(card);
+    }
+    else if (index === 1) {
         card.style.left = '25%';
         card.style.transform = 'translate(-50%, 40px)';
         card.style.zIndex = '2';
