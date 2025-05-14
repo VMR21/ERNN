@@ -317,12 +317,14 @@
   </div>
 
   <!-- Leaderboard Table Headings -->
-  <div class="row list details">
-    <div class="hide-mobile col-2"> Place </div>
-    <div class="col-5"> User </div>
-    <div class="col-2"> Reward </div>
-    <div class="col-3"> Wagered </div>
-  </div>
+  <!-- Leaderboard Header Card -->
+<div class="lb-header-card">
+  <div class="lb-header-item">Place</div>
+  <div class="lb-header-item">User</div>
+  <div class="lb-header-item">Reward</div>
+  <div class="lb-header-item">Wagered</div>
+</div>
+
 
   <!-- Player Rows (4-10 and beyond) -->
   <div id="leaderboard-rows"></div>
@@ -445,76 +447,163 @@
 <script src="/js/app.js"></script>
 <script src="/js/particles.js"></script>
 <script src="/js/toast.js"></script>
+<style>
+  .top-three-layout {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 20px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+
+  .top-three-layout .top-card {
+    text-align: center;
+    padding: 15px;
+    border-radius: 12px;
+    background: #1c1c1c;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+    color: white;
+    width: 140px;
+    position: relative;
+  }
+
+  .top-three-layout .top-card img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+  }
+
+  .top-three-layout .place {
+    font-size: 24px;
+    font-weight: bold;
+    color: gold;
+  }
+
+  .top-three-layout .username,
+  .top-three-layout .reward,
+  .top-three-layout .wagered {
+    font-size: 14px;
+    margin-top: 4px;
+  }
+
+  .top-three-layout .second {
+    transform: translateY(20px);
+  }
+
+  .top-three-layout .third {
+    transform: translateY(20px);
+  }
+
+  .top-three-layout .first {
+    transform: translateY(0px);
+    z-index: 2;
+  }
+
+  .lb-header-card {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    font-size: 18px;
+    padding: 12px 16px;
+    color: white;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    margin: 10px 0 15px;
+  }
+
+  .lb-header-card .lb-header-item {
+    width: 25%;
+    text-align: center;
+  }
+
+  .lb-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.02);
+    color: white;
+    border-radius: 6px;
+    margin-bottom: 8px;
+  }
+
+  .lb-row .lb-cell {
+    width: 25%;
+    text-align: center;
+    font-size: 14px;
+  }
+
+  .lb-row .lb-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+</style>
+
 <script>
 const API_URL = 'https://azisailbdata-q469.onrender.com/leaderboard/top14';
 const roobetLogo = '/assets/roobetlogo.png';
-const rewards = [1000, 750, 500, 250, 200, 150, 100, 75, 50, 25]; // Only first 10 rewarded
+const rewards = [1250, 1000, 750, 500, 250, 250, 100, 100, 50, 50];
 
-const top3Glows = ['0 0 40px #FFD700', '0 0 40px #C0C0C0', '0 0 40px #CD7F32'];
+function formatCurrency(num) {
+  return '$ ' + Number(num).toLocaleString(undefined, { maximumFractionDigits: 2 });
+}
 
-// Countdown logic
+function renderTop3(data) {
+  const container = document.getElementById('top3-cards');
+  const places = ['second', 'first', 'third'];
+  const html = data.slice(0, 3).map((user, i) => {
+    return `
+      <div class="top-card ${places[i]}">
+        <div class="place">${i + 1}${['st','nd','rd'][i]}</div>
+        <img src="${roobetLogo}" alt="avatar">
+        <div class="username">${user.username}</div>
+        <div class="reward">Reward: <b>${formatCurrency(rewards[i] || 0)}</b></div>
+        <div class="wagered">Wagered: <b>${formatCurrency(user.weightedWager)}</b></div>
+      </div>
+    `;
+  }).join('');
+  container.innerHTML = html;
+}
+
+function renderBelowRows(data) {
+  const container = document.getElementById('leaderboard-rows');
+  const rows = data.slice(3).map((user, i) => {
+    const place = i + 4;
+    const reward = rewards[place - 1] || 0;
+    return `
+      <div class="lb-row">
+        <div class="lb-cell">#${place}</div>
+        <div class="lb-cell"><img src="${roobetLogo}" class="lb-avatar">${user.username}</div>
+        <div class="lb-cell">${formatCurrency(reward)}</div>
+        <div class="lb-cell">${formatCurrency(user.weightedWager)}</div>
+      </div>
+    `;
+  }).join('');
+  container.innerHTML = rows;
+}
+
 function updateCountdown() {
-  const el = document.getElementById("countdown");
+  const endDate = new Date("2025-06-15T00:00:00Z");
   const now = new Date();
-  const target = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-  const diff = target - now;
-  if (diff <= 0) return el.textContent = "Ended";
-  const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
-  const m = Math.floor((diff / (1000 * 60)) % 60);
-  const s = Math.floor((diff / 1000) % 60);
-  el.textContent = `${d}d ${h}h ${m}m ${s}s`;
+  const diff = endDate - now;
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+  const seconds = Math.floor((diff / 1000) % 60);
+  document.getElementById("countdown").textContent = `${days} Days ${String(hours).padStart(2,0)}:${String(minutes).padStart(2,0)}:${String(seconds).padStart(2,0)}`;
 }
+
 setInterval(updateCountdown, 1000);
-updateCountdown();
 
-async function loadLeaderboard() {
-  const res = await fetch(API_URL);
-  const data = await res.json();
-
-  const top3Container = document.querySelector(".css-gqrafh");
-  const rowsContainer = document.getElementById("leaderboard-rows");
-
-  data.forEach((entry, index) => {
-    const place = index + 1;
-    const reward = index < rewards.length ? `$ ${rewards[index]}` : '$ 0';
-    const wagered = `$ ${Number(entry.wagered).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    const username = entry.username;
-
-    if (index < 3) {
-      const card = document.createElement('div');
-      card.className = 'css-jehefp';
-      card.style.boxShadow = top3Glows[index];
-      card.style.position = 'relative';
-      if (index === 1) card.style.transform = 'translateY(25px)';
-      if (index === 2) card.style.transform = 'translateY(25px)';
-      card.innerHTML = `
-        <img src="${roobetLogo}" width="96" height="96" style="border-radius: 12px;">
-        <div class="css-hca0vm"><span class="css-15a1lq3" style="font-weight:bold;">${username}</span></div>
-        <div class="css-7ahevu ejrykqo0"><span class="css-1vqddgv">Wagered: </span>
-          <span class="css-18icuxn"><div class="css-1y0ox2o"><span class="css-114dvlx">${wagered}</span></div></span>
-        </div>
-        <span class="css-v4675v"><div class="css-1y0ox2o"><span class="css-114dvlx glow">${reward}</span></div></span>`;
-      top3Container.appendChild(card);
-    } else {
-      const row = document.createElement('div');
-      row.className = 'row list row-cols-5';
-      row.setAttribute('data-v-1d580398', '');
-      row.innerHTML = `
-        <div class="hide-mobile col-2"><b style="font-size: 18px;">#${place}</b></div>
-        <div class="col-5">
-          <img src="${roobetLogo}" width="22" style="margin-right: 8px;">
-          <span style="font-weight:bold; font-size: 16px;">${username}</span>
-        </div>
-        <div class="col-2">
-          <div class="price-wrapper glow" style="font-weight:bold; font-size: 15px;">${reward}</div>
-        </div>
-        <div class="col-3">
-          <div class="price-wrapper" style="color: #FFF; font-weight:bold; font-size: 15px;">${wagered}</div>
-        </div>`;
-      rowsContainer.appendChild(row);
-    }
+fetch(API_URL)
+  .then(res => res.json())
+  .then(data => {
+    renderTop3(data);
+    renderBelowRows(data);
   });
-}
-loadLeaderboard();
 </script>
