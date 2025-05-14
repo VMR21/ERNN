@@ -331,17 +331,12 @@
   </div>
 
   <!-- Leaderboard Table Headings -->
-row.innerHTML = `
-  <div class="flex w-full items-center justify-between px-4 py-3 border border-blue-500 rounded-md mb-2 bg-black bg-opacity-50 text-white text-sm md:text-base">
-    <div class="w-[20%] text-left font-bold">#${place}</div>
-    <div class="w-[40%] flex items-center gap-2 font-semibold">
-      <img src="${roobetLogo}" width="22">
-      <span class="truncate max-w-[100px] md:max-w-none">${username}</span>
-    </div>
-    <div class="w-[20%] text-center font-bold text-blue-400">${reward}</div>
-    <div class="w-[20%] text-right font-bold">${wagered}</div>
-  </div>`;
-
+  <div class="row list details">
+    <div class="hide-mobile col-2"> Place </div>
+    <div class="col-5"> User </div>
+    <div class="col-2"> Reward </div>
+    <div class="col-3"> Wagered </div>
+  </div>
 
   <!-- Player Rows (4-10) -->
   <div id="leaderboard-rows"></div>
@@ -521,16 +516,14 @@ async function loadLeaderboard() {
       row.className = 'row list row-cols-5';
       row.setAttribute('data-v-1d580398', '');
       row.innerHTML = `
-        <div class="hide-mobile col-2"><b style="font-size: 18px;">#${place}</b></div>
-        <div class="col-5">
-          <img src="${roobetLogo}" width="22" style="margin-right: 8px;">
-          <span style="font-weight:bold; font-size: 16px;">${username}</span>
-        </div>
-        <div class="col-2">
-          <div class="price-wrapper glow" style="font-weight:bold; font-size: 15px;">${reward}</div>
-        </div>
-        <div class="col-3">
-          <div class="price-wrapper" style="color: #FFF; font-weight:bold; font-size: 15px;">${wagered}</div>
+        <div class="flex w-full items-center justify-between px-4 py-3 border border-blue-500 rounded-md mb-2 bg-black bg-opacity-50 text-white text-sm md:text-base">
+          <div class="w-[20%] text-left font-bold">#${place}</div>
+          <div class="w-[40%] flex items-center gap-2 font-semibold">
+            <img src="${roobetLogo}" width="22">
+            <span class="truncate max-w-[100px] md:max-w-none">${username}</span>
+          </div>
+          <div class="w-[20%] text-center font-bold text-blue-400">${reward}</div>
+          <div class="w-[20%] text-right font-bold">${wagered}</div>
         </div>`;
       rowsContainer.appendChild(row);
     }
