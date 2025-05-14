@@ -282,7 +282,7 @@
     </header>
     <div class="toggle-images" style="margin-top: 50px;">
         <img class="game-image roobet-image" id="roobetImage" src="/assets/roobet.png"
-            style="cursor: pointer;opacity: 1;" onclick="window.location.href='/leaderboard/roobet.html'">
+            style="cursor: pointer;opacity: 1;" onclick="window.location.href='/leaderboard/roobet'">
     </div>
     <br>
     <div data-v-1d580398="" data-v-e4097664="" id="appContent">
@@ -290,8 +290,8 @@
             <div data-v-1d580398="" class="row text">
                 <span data-v-1d580398="" class="title">
                     <div data-v-1d580398="" class="price-wrapper glow">
-                        $ 750
-                    </div> MONTHLY CODE <span class="glow">ERNN</span> Leaderboard!
+                        $ 200
+                    </div> WEEKLY CODE <span class="glow">ERNN</span> Leaderboard!
                 </span>
                 <span data-v-1d580398="" class="subtitle" style="color: #FFF;">Every <b>BET</b> on Roobet under Code
                     <b>ERNN</b>
@@ -346,9 +346,9 @@
 
         <div data-v-5867ad71="" class="col">
             <span data-v-5867ad71="" class="title">Info</span>
-            <a data-v-5867ad71="" href="/" class=""><span data-v-5867ad71="" class="subtitle">Terms of
+            <a data-v-5867ad71="" href="/tos" class=""><span data-v-5867ad71="" class="subtitle">Terms of
                     Service</span></a>
-            <a data-v-5867ad71="" href="/" class=""><span data-v-5867ad71="" class="subtitle">Privacy
+            <a data-v-5867ad71="" href="/privacy" class=""><span data-v-5867ad71="" class="subtitle">Privacy
                     Policy</span></a>
         </div>
         <style>
@@ -454,7 +454,7 @@
 <script>
 const API_URL = 'https://erndata.onrender.com/leaderboard/top14';
 const roobetLogo = '/assets/roobetlogo.png';
-const rewards = [200, 300, 100, 75, 75]; // Only first 10 rewarded
+const rewards = [100, 50, 25, 12.5, 12.5]; // Only first 10 rewarded
 
 const top3Glows = ['0 0 40px #C0C0C0', '0 0 40px #FFD700', '0 0 40px #CD7F32'];
 
@@ -464,7 +464,7 @@ function updateCountdown() {
   const now = new Date();
 
   // Set fixed target date: 14 June 2025 at 00:00:00 UTC
-  const target = new Date(Date.UTC(2025, 5, 14, 0, 0, 0)); // Month is 0-indexed: 5 = June
+  const target = new Date(Date.UTC(2025, 4, 22, 0, 0, 0)); // Month is 0-indexed: 5 = June
 
   const diff = target - now;
   if (diff <= 0) return el.textContent = "Ended";
