@@ -300,7 +300,176 @@
                         </button>
                     </div>
                 </span>
+
 <div class="css-2w2ovy">
+  <!-- Top 3 Player Cards -->
+  <div class="top-three-layout" id="top3-cards"></div>
+
+  <!-- Countdown Timer -->
+  <div class="countdown">
+    <div>
+      <span class="title"><span class="glow" style="color: #FFF">ENDING</span> IN </span>
+      <span class="subtitle" id="countdown">X Days XX:XX:XX</span>
+    </div>
+  </div>
+</div>
+
+<!-- Leaderboard Header Card -->
+<div class="lb-header-card">
+  <div class="lb-header-item">Place</div>
+  <div class="lb-header-item">User</div>
+  <div class="lb-header-item">Reward</div>
+  <div class="lb-header-item">Wagered</div>
+</div>
+
+<!-- Player Rows (4-10 and beyond) -->
+<div id="leaderboard-rows"></div>
+
+<style>
+  .top-three-layout {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 40px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+    position: relative;
+  }
+
+  .top-card {
+    text-align: center;
+    padding: 16px;
+    border-radius: 16px;
+    color: white;
+    width: 140px;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    background: linear-gradient(to bottom right, #0f172a, #1e293b);
+    transition: transform 0.3s ease;
+  }
+
+  .top-card img {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 10px;
+    border-radius: 50%;
+    border: 2px solid white;
+  }
+
+  .top-card .place {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 6px;
+  }
+
+  .top-card .username,
+  .top-card .reward,
+  .top-card .wagered {
+    font-size: 14px;
+    margin-top: 6px;
+    font-weight: 500;
+  }
+
+  .top-card.first {
+    transform: translateY(0px);
+    z-index: 3;
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.5);
+    background: linear-gradient(145deg, #ffd700, #b8860b);
+  }
+
+  .top-card.second {
+    transform: translateY(20px);
+    z-index: 2;
+    box-shadow: 0 0 20px rgba(192, 192, 192, 0.5);
+    background: linear-gradient(145deg, #c0c0c0, #808080);
+  }
+
+  .top-card.third {
+    transform: translateY(20px);
+    z-index: 1;
+    box-shadow: 0 0 20px rgba(205, 127, 50, 0.5);
+    background: linear-gradient(145deg, #cd7f32, #8b4513);
+  }
+</style>
+
+<script>
+const API_URL = 'https://erndata.onrender.com/leaderboard/top14';
+const roobetLogo = '/assets/roobetlogo.png';
+const rewards = [1250, 1000, 750, 500, 250, 250, 100, 100, 50, 50];
+
+function formatCurrency(num) {
+  return '$ ' + Number(num).toLocaleString(undefined, { maximumFractionDigits: 2 });
+}
+
+function renderTop3(data) {
+  const container = document.getElementById('top3-cards');
+  if (!data[0] || !data[1] || !data[2]) return;
+
+  const html = `
+    <div class="top-card second">
+      <div class="place">2nd</div>
+      <img src="${roobetLogo}" alt="avatar">
+      <div class="username">${data[1].username}</div>
+      <div class="reward">Reward: <b>${formatCurrency(rewards[1] || 0)}</b></div>
+      <div class="wagered">Wagered: <b>${formatCurrency(data[1].weightedWager)}</b></div>
+    </div>
+    <div class="top-card first">
+      <div class="place">1st</div>
+      <img src="${roobetLogo}" alt="avatar">
+      <div class="username">${data[0].username}</div>
+      <div class="reward">Reward: <b>${formatCurrency(rewards[0] || 0)}</b></div>
+      <div class="wagered">Wagered: <b>${formatCurrency(data[0].weightedWager)}</b></div>
+    </div>
+    <div class="top-card third">
+      <div class="place">3rd</div>
+      <img src="${roobetLogo}" alt="avatar">
+      <div class="username">${data[2].username}</div>
+      <div class="reward">Reward: <b>${formatCurrency(rewards[2] || 0)}</b></div>
+      <div class="wagered">Wagered: <b>${formatCurrency(data[2].weightedWager)}</b></div>
+    </div>
+  `;
+  container.innerHTML = html;
+}
+
+function renderBelowRows(data) {
+  const container = document.getElementById('leaderboard-rows');
+  const rows = data.slice(3).map((user, i) => {
+    const place = i + 4;
+    const reward = rewards[place - 1] || 0;
+    return `
+      <div class="lb-row">
+        <div class="lb-cell">#${place}</div>
+        <div class="lb-cell"><img src="${roobetLogo}" class="lb-avatar">${user.username}</div>
+        <div class="lb-cell">${formatCurrency(reward)}</div>
+        <div class="lb-cell">${formatCurrency(user.weightedWager)}</div>
+      </div>
+    `;
+  }).join('');
+  container.innerHTML = rows;
+}
+
+function updateCountdown() {
+  const endDate = new Date("2025-06-15T00:00:00Z");
+  const now = new Date();
+  const diff = endDate - now;
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+  const seconds = Math.floor((diff / 1000) % 60);
+  document.getElementById("countdown").textContent =
+    `${days} Days ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
+setInterval(updateCountdown, 1000);
+
+fetch(API_URL)
+  .then(res => res.json())
+  .then(data => {
+    renderTop3(data);
+    renderBelowRows(data);
+  });
+</script>
+
   <!-- Top 3 Player Cards -->
   <div class="top-three-layout" id="top3-cards"></div>
 
