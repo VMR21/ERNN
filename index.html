@@ -392,20 +392,24 @@
   }
 
   .footer-socials a.social {
-    display: inline-block;
-    width: 24px;
-    height: 24px;
-  }
-
-  .footer-socials .social-img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
     transition: transform 0.2s;
   }
 
-  .footer-socials .social-img:hover {
-    transform: scale(1.1);
+  .footer-socials a.social:hover {
+    transform: translateX(4px);
+  }
+
+  .footer-socials .social-img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
   }
 </style>
 
@@ -414,21 +418,27 @@
     <div class="footer-socials">
         <a href="https://kick.com/erntmz" target="_blank" class="social">
             <img src="/assets/kick.png" alt="Kick Logo" class="social-img">
+            <span>Kick</span>
         </a>
         <a href="https://tiktok.com/@arentopg" target="_blank" class="social">
             <img src="/assets/tiktok.png" alt="TikTok Logo" class="social-img">
+            <span>TikTok</span>
         </a>
         <a href="https://instagram.com/ern.did" target="_blank" class="social">
             <img src="/assets/instagram.png" alt="Instagram Logo" class="social-img">
+            <span>Instagram</span>
         </a>
         <a href="https://youtube.com/ern_did" target="_blank" class="social">
             <img src="/assets/youtube.png" alt="YouTube Logo" class="social-img">
+            <span>YouTube</span>
         </a>
         <a href="https://discord.gg/erndid" target="_blank" class="social">
             <img src="/assets/discord.png" alt="Discord Logo" class="social-img">
+            <span>Discord</span>
         </a>
     </div>
 </div>
+
 
 
         <div data-v-5867ad71="" class="col">
