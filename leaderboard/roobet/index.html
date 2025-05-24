@@ -458,15 +458,31 @@ const rewards = [50, 100, 25, 12.5, 12.5]; // Only first 10 rewarded
 
 const top3Glows = ['0 0 40px #C0C0C0', '0 0 40px #FFD700', '0 0 40px #CD7F32'];
 
-// Countdown logic
 function updateCountdown() {
   const el = document.getElementById("countdown");
   const now = new Date();
 
-  // Set fixed target date: 14 June 2025 at 00:00:00 UTC
-  const target = new Date(Date.UTC(2025, 4, 22, 0, 0, 0)); // Month is 0-indexed: 5 = June
+  // Get current UTC time
+  const nowUTC = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
 
-  const diff = target - now;
+  // Get current day in UTC (0 = Sunday, ..., 6 = Saturday)
+  const currentUTCDay = nowUTC.getUTCDay();
+
+  // Calculate how many days until next Saturday 00:00 UTC
+  const daysUntilNextSaturday = (6 - currentUTCDay + 1) % 7;
+
+  // Get the next Saturday 00:00 UTC
+  const nextSaturday = new Date(Date.UTC(
+    nowUTC.getUTCFullYear(),
+    nowUTC.getUTCMonth(),
+    nowUTC.getUTCDate() + daysUntilNextSaturday,
+    0, 0, 0
+  ));
+
+  // Get the last Friday 23:59:59 UTC (1 second before next Saturday)
+  const endOfWeek = new Date(nextSaturday.getTime() - 1000);
+
+  const diff = endOfWeek - nowUTC;
   if (diff <= 0) return el.textContent = "Ended";
 
   const d = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -478,6 +494,7 @@ function updateCountdown() {
 
 setInterval(updateCountdown, 1000);
 updateCountdown();
+
 
 
 async function loadLeaderboard() {
