@@ -291,7 +291,7 @@
                 <span data-v-1d580398="" class="title">
                     <div data-v-1d580398="" class="price-wrapper glow">
                         $ 300
-                    </div> WEEKLY CODE <span class="glow">ERNN</span> Leaderboard!
+                    </div> MONTHLY CODE <span class="glow">ERNN</span> Leaderboard!
                 </span>
                 <span data-v-1d580398="" class="subtitle" style="color: #FFF;">Every <b>BET</b> on Roobet under Code
                     <b>ERNN</b>
@@ -463,24 +463,13 @@ function updateCountdown() {
   const now = new Date();
   const nowUTC = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
 
-  const currentUTCDay = nowUTC.getUTCDay(); // 0 (Sun) to 6 (Sat)
-  const currentUTCDate = nowUTC.getUTCDate();
-  const currentUTCMonth = nowUTC.getUTCMonth();
-  const currentUTCYear = nowUTC.getUTCFullYear();
+  const year = nowUTC.getUTCFullYear();
+  const month = nowUTC.getUTCMonth();
 
-  // Calculate the most recent Saturday 00:00:01 UTC
-  const daysSinceSaturday = (currentUTCDay + 1) % 7; // Sat=6 → 0, Sun=0 → 1, ..., Fri=5 → 6
-  const lastSaturday = new Date(Date.UTC(
-    currentUTCYear,
-    currentUTCMonth,
-    currentUTCDate - daysSinceSaturday,
-    0, 0, 1
-  ));
+  // Last day of current month at 23:59:00 UTC
+  const endOfMonth = new Date(Date.UTC(year, month + 1, 0, 23, 59, 0));
+  const diff = endOfMonth - nowUTC;
 
-  // End time: upcoming Friday 23:59:59 UTC (just before the next Saturday)
-  const endOfWeek = new Date(lastSaturday.getTime() + 6 * 24 * 60 * 60 * 1000 + 86399000); // 6 days + 23:59:58
-
-  const diff = endOfWeek - nowUTC;
   if (diff <= 0) {
     el.textContent = "Ended";
     return;
@@ -496,9 +485,6 @@ function updateCountdown() {
 
 setInterval(updateCountdown, 1000);
 updateCountdown();
-
-
-
 
 async function loadLeaderboard() {
   const res = await fetch(API_URL);
