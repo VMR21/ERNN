@@ -458,6 +458,47 @@ const rewards = [75, 150, 50, 12.5, 12.5]; // Only first 10 rewarded
 
 const top3Glows = ['0 0 40px #C0C0C0', '0 0 40px #FFD700', '0 0 40px #CD7F32'];
 
+Okay, absolutely! Let's make the frontend dynamic and match the backend's awesome data refresh logic.
+
+The goal is:
+
+Frontend data refresh: Every 5 minutes (to match the backend's cache update).
+Frontend countdown: Already updates every second to the end of the UTC month (which is perfect).
+Frontend display text: Update the "15 minutes" text to "5 minutes" to reflect the actual update frequency.
+Here's how to modify your frontend HTML and JavaScript:
+
+1. Update the HTML to reflect "5 minutes" refresh:
+
+Find this line in your HTML:
+
+HTML
+
+<i>The leaderboard updates every 15 minutes.</i><br>
+Change it to:
+
+HTML
+
+<i>The leaderboard updates every 5 minutes.</i><br>
+2. Modify the JavaScript to implement the 5-minute data refresh:
+
+Locate the <script> block that contains loadLeaderboard() and updateCountdown(). It's towards the end of your <body> tag.
+
+You need to add a setInterval call for loadLeaderboard() and also ensure that the existing content in the leaderboard is cleared before new data is appended to avoid duplicates.
+
+JavaScript
+
+<script>
+// ... (your existing modal JS for rulesButton and toast JS) ...
+
+// --- Start of the main leaderboard JS block ---
+
+const API_URL = 'https://erndata.onrender.com/leaderboard/top14';
+const roobetLogo = '/assets/roobetlogo.png';
+const rewards = [75, 150, 50, 12.5, 12.5]; // Only first 10 rewarded
+
+const top3Glows = ['0 0 40px #C0C0C0', '0 0 40px #FFD700', '0 0 40px #CD7F32'];
+
+// COUNTDOWN TIMER LOGIC (This is already perfect, no changes needed here)
 function updateCountdown() {
   const el = document.getElementById("countdown");
   const now = new Date();
