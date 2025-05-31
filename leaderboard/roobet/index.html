@@ -458,47 +458,6 @@ const rewards = [75, 150, 50, 12.5, 12.5]; // Only first 10 rewarded
 
 const top3Glows = ['0 0 40px #C0C0C0', '0 0 40px #FFD700', '0 0 40px #CD7F32'];
 
-Okay, absolutely! Let's make the frontend dynamic and match the backend's awesome data refresh logic.
-
-The goal is:
-
-Frontend data refresh: Every 5 minutes (to match the backend's cache update).
-Frontend countdown: Already updates every second to the end of the UTC month (which is perfect).
-Frontend display text: Update the "15 minutes" text to "5 minutes" to reflect the actual update frequency.
-Here's how to modify your frontend HTML and JavaScript:
-
-1. Update the HTML to reflect "5 minutes" refresh:
-
-Find this line in your HTML:
-
-HTML
-
-<i>The leaderboard updates every 15 minutes.</i><br>
-Change it to:
-
-HTML
-
-<i>The leaderboard updates every 5 minutes.</i><br>
-2. Modify the JavaScript to implement the 5-minute data refresh:
-
-Locate the <script> block that contains loadLeaderboard() and updateCountdown(). It's towards the end of your <body> tag.
-
-You need to add a setInterval call for loadLeaderboard() and also ensure that the existing content in the leaderboard is cleared before new data is appended to avoid duplicates.
-
-JavaScript
-
-<script>
-// ... (your existing modal JS for rulesButton and toast JS) ...
-
-// --- Start of the main leaderboard JS block ---
-
-const API_URL = 'https://erndata.onrender.com/leaderboard/top14';
-const roobetLogo = '/assets/roobetlogo.png';
-const rewards = [75, 150, 50, 12.5, 12.5]; // Only first 10 rewarded
-
-const top3Glows = ['0 0 40px #C0C0C0', '0 0 40px #FFD700', '0 0 40px #CD7F32'];
-
-// COUNTDOWN TIMER LOGIC (This is already perfect, no changes needed here)
 function updateCountdown() {
   const el = document.getElementById("countdown");
   const now = new Date();
@@ -527,81 +486,56 @@ function updateCountdown() {
 setInterval(updateCountdown, 1000);
 updateCountdown();
 
-
-// LEADERBOARD DATA LOADING AND RENDERING LOGIC
 async function loadLeaderboard() {
-  console.log("Fetching leaderboard data from backend..."); // For debugging in console
-  try {
-    const res = await fetch(API_URL);
-    if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-    }
-    const data = await res.json();
+  const res = await fetch(API_URL);
+  const data = await res.json();
 
-    const top3Container = document.querySelector(".css-gqrafh");
-    const rowsContainer = document.getElementById("leaderboard-rows");
+  const top3Container = document.querySelector(".css-gqrafh");
+  const rowsContainer = document.getElementById("leaderboard-rows");
 
-    // IMPORTANT: Clear existing content before adding new data
-    top3Container.innerHTML = '';
-    rowsContainer.innerHTML = '';
+  data.forEach((entry, index) => {
+    const place = index + 1;
+    const reward = index < rewards.length ? `$ ${rewards[index]}` : '$ 0';
+    const wagered = `$ ${Number(entry.wagered).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    const username = entry.username;
 
-    data.forEach((entry, index) => {
-      const place = index + 1;
-      const reward = index < rewards.length ? `$ ${rewards[index]}` : '$ 0';
-      const wagered = `$ ${Number(entry.wagered).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-      const username = entry.username;
-
-      if (index < 3) {
-        const card = document.createElement('div');
-        card.className = 'css-jehefp';
-        card.style.boxShadow = top3Glows[index];
-        card.style.position = 'relative';
-        if (index === 1) {
-            card.style.transformOrigin = 'center center';
-            card.style.transform = 'translateY(25px) scale(1.2)';
-        }
-        if (index === 2) card.style.transform = 'translateY(25px)';
-        card.innerHTML = `
-          <img src="${roobetLogo}" style="width: 96px; height: auto; border-radius: 12px;">
-          <div class="css-hca0vm"><span class="css-15a1lq3" style="font-weight:bold;">${username}</span></div>
-          <div class="css-7ahevu ejrykqo0"><span class="css-1vqddgv">Wagered: </span>
-            <span class="css-18icuxn"><div class="css-1y0ox2o"><span class="css-114dvlx">${wagered}</span></div></span>
-          </div>
-          <span class="css-v4675v"><div class="css-1y0ox2o"><span class="css-114dvlx glow">${reward}</span></div></span>`;
-        top3Container.appendChild(card);
-      } else {
-        const row = document.createElement('div');
-        row.className = 'row list row-cols-5';
-        row.setAttribute('data-v-1d580398', '');
-        row.innerHTML = `
-          <div class="hide-mobile col-2"><b style="font-size: 18px;">#${place}</b></div>
-          <div class="col-5">
-            <img src="${roobetLogo}" width="22" style="margin-right: 8px;">
-            <span style="font-weight:bold; font-size: 16px;">${username}</span>
-          </div>
-          <div class="col-2">
-            <div class="price-wrapper glow" style="font-weight:bold; font-size: 15px;">${reward}</div>
-          </div>
-          <div class="col-3">
-            <div class="price-wrapper" style="color: #FFF; font-weight:bold; font-size: 15px;">${wagered}</div>
-          </div>`;
-        rowsContainer.appendChild(row);
+    if (index < 3) {
+      const card = document.createElement('div');
+      card.className = 'css-jehefp';
+      card.style.boxShadow = top3Glows[index];
+      card.style.position = 'relative';
+      if (index === 1) {
+          card.style.transformOrigin = 'center center';
+          card.style.transform = 'translateY(25px) scale(1.2)';
       }
-    });
-    console.log("Leaderboard data refreshed on frontend.");
-  } catch (error) {
-    console.error("Error loading leaderboard data:", error);
-    // Optionally display an error message to the user here
-    // showToast("Failed to load leaderboard. Please try refreshing.", "error");
-  }
+      if (index === 2) card.style.transform = 'translateY(25px)';
+      card.innerHTML = `
+        <img src="${roobetLogo}" style="width: 96px; height: auto; border-radius: 12px;">
+        <div class="css-hca0vm"><span class="css-15a1lq3" style="font-weight:bold;">${username}</span></div>
+        <div class="css-7ahevu ejrykqo0"><span class="css-1vqddgv">Wagered: </span>
+          <span class="css-18icuxn"><div class="css-1y0ox2o"><span class="css-114dvlx">${wagered}</span></div></span>
+        </div>
+        <span class="css-v4675v"><div class="css-1y0ox2o"><span class="css-114dvlx glow">${reward}</span></div></span>`;
+      top3Container.appendChild(card);
+    } else {
+      const row = document.createElement('div');
+      row.className = 'row list row-cols-5';
+      row.setAttribute('data-v-1d580398', '');
+      row.innerHTML = `
+        <div class="hide-mobile col-2"><b style="font-size: 18px;">#${place}</b></div>
+        <div class="col-5">
+          <img src="${roobetLogo}" width="22" style="margin-right: 8px;">
+          <span style="font-weight:bold; font-size: 16px;">${username}</span>
+        </div>
+        <div class="col-2">
+          <div class="price-wrapper glow" style="font-weight:bold; font-size: 15px;">${reward}</div>
+        </div>
+        <div class="col-3">
+          <div class="price-wrapper" style="color: #FFF; font-weight:bold; font-size: 15px;">${wagered}</div>
+        </div>`;
+      rowsContainer.appendChild(row);
+    }
+  });
 }
-
-// Initial load of the leaderboard data when the page loads
 loadLeaderboard();
-
-// Set interval to refresh the leaderboard data every 5 minutes
-// This matches the backend's refresh rate.
-setInterval(loadLeaderboard, 5 * 60 * 1000); // 5 minutes * 60 seconds * 1000 milliseconds
-
-// --- End of the main leaderboard JS block ---
 </script>
